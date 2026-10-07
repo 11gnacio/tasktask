@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="text-center my-4">
+    <h1 class="fw-bold display-4">☑ TaskTrack</h1>
+    <p class="fs-5 text-muted">Organiza tus tareas y proyectos</p>
+</div>
+
+<div class="row justify-content-center">
+    <!-- Formulario Crear Cuenta -->
+    <div class="col-md-5 me-md-4">
+        <div class="card p-4 border border-dark">
+            <h3 class="fw-bold mb-3">Crear Cuenta</h3>
+            {% with messages = get_flashed_messages(category_filter=["registro"]) %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-danger py-1">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="/registro" method="POST">
+                <div class="mb-2">
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" class="form-control border-dark">
+                </div>
+                <div class="mb-2">
+                    <label>Apellido:</label>
+                    <input type="text" name="apellido" class="form-control border-dark">
+                </div>
+                <div class="mb-2">
+                    <label>E-mail:</label>
+                    <input type="email" name="email" class="form-control border-dark">
+                </div>
+                <div class="mb-2">
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" class="form-control border-dark">
+                </div>
+                <div class="mb-3">
+                    <label>Confirmar Contraseña:</label>
+                    <input type="password" name="confirm_password" class="form-control border-dark">
+                </div>
+                <button type="submit" class="btn btn-dark w-100">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Formulario Iniciar Sesión -->
+    <div class="col-md-4 mt-4 mt-md-0">
+        <div class="card p-4 border border-dark">
+            <h3 class="fw-bold mb-3">Iniciar Sesión</h3>
+            {% with messages = get_flashed_messages(category_filter=["login"]) %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-danger py-1">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="/login" method="POST">
+                <div class="mb-3">
+                    <label>E-mail:</label>
+                    <input type="email" name="email" class="form-control border-dark">
+                </div>
+                <div class="mb-3">
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" class="form-control border-dark">
+                </div>
+                <button type="submit" class="btn btn-dark w-100 mb-3">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

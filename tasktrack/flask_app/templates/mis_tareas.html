@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="fw-bold">Mis Tareas</h1>
+    <a href="/tareas/nueva" class="btn btn-primary btn-lg">+ Nueva Tarea</a>
+</div>
+
+<!-- Barra de Filtros -->
+<form method="GET" action="/tareas" class="row g-2 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="q" class="form-control border-dark" placeholder="Buscar por título..." value="{{ request.args.get('q', '') }}">
+    </div>
+    <div class="col-md-3">
+        <select name="categoria_id" class="form-select border-dark">
+            <option value="">Todas las categorías</option>
+            {% for cat in categorias %}
+                <option value="{{ cat.id }}" {% if request.args.get('categoria_id') == cat.id|string %}selected{% endif %}>{{ cat.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="estado" class="form-select border-dark">
+            <option value="">Todos los estados</option>
+            <option value="Pendiente" {% if request.args.get('estado') == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+            <option value="En progreso" {% if request.args.get('estado') == 'En progreso' %}selected{% endif %}>En progreso</option>
+            <option value="Completada" {% if request.args.get('estado') == 'Completada' %}selected{% endif %}>Completada</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="prioridad" class="form-select border-dark">
+            <option value="">Todas las prioridades</option>
+            <option value="Alta" {% if request.args.get('prioridad') == 'Alta' %}selected{% endif %}>Alta</option>
+            <option value="Media" {% if request.args.get('prioridad') == 'Media' %}selected{% endif %}>Media</option>
+            <option value="Baja" {% if request.args.get('prioridad') == 'Baja' %}selected{% endif %}>Baja</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-dark w-100">🔍</button>
+    </div>
+</form>
+
+<!-- Tabla de Tareas -->
+<table class="table table-bordered align-middle bg-white mb-5">
+    <thead class="table-secondary">
+        <tr>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Prioridad</th>
+            <th>Fecha Límite</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tareas %}
+        <tr>
+            <td>{{ t.titulo }}</td>
+            <td>{{ t.categoria_nombre }}</td>
+            <td>
+                <span class="badge {% if t.prioridad == 'Alta' %}bg-danger{% elif t.prioridad == 'Media' %}bg-primary{% else %}bg-secondary{% endif %}">
+                    {{ t.prioridad }}
+                </span>
+            </td>
+            <td>{{ t.fecha_limite }}</td>
+            <td>
+                <span class="badge {% if t.estado == 'Completada' %}bg-success{% elif t.estado == 'En progreso' %}bg-info text-dark{% else %}bg-warning text-dark{% endif %}">
+                    {{ t.estado }}
+                </span>
+            </td>
+            <td>
+                <a href="/tareas/{{ t.id }}" class="text-primary text-decoration-underline me-2">Ver</a>
+                <a href="/tareas/editar/{{ t.id }}" class="text-primary text-decoration-underline me-2">Editar</a>
+                <a href="/tareas/borrar/{{ t.id }}" class="text-danger text-decoration-underline" onclick="return confirm('¿Borrar tarea?')">Borrar</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="text-center">No hay tareas registradas.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="row">
+    <!-- Próximas Tareas -->
+    <div class="col-md-6">
+        <h3 class="fw-bold mb-3">Próximas tareas</h3>
+        <table class="table table-bordered bg-white">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Título</th>
+                    <th>Fecha Límite</th>
+                    <th>Días restantes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in proximas[:3] %}
+                <tr>
+                    <td>{{ p.titulo }}</td>
+                    <td>{{ p.fecha_limite }}</td>
+                    <td>{{ p.dias_restantes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Resumen -->
+    <div class="col-md-6">
+        <h3 class="fw-bold mb-3">Resumen</h3>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Total de tareas: <strong>{{ resumen.total }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Pendientes: <strong>{{ resumen.pendientes }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                En progreso: <strong>{{ resumen.en_progreso }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Completadas: <strong>{{ resumen.completadas }}</strong>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

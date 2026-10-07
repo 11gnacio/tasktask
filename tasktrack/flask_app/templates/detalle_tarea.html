@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<h1 class="display-4 fw-bold mb-4">{{ tarea.titulo }}</h1>
+
+<div class="fs-5 mb-4">
+    <p>📁 <strong>Categoría:</strong> <span class="badge bg-secondary">{{ tarea.categoria_nombre }}</span></p>
+    <p>★ <strong>Prioridad:</strong> <span class="badge bg-danger">{{ tarea.prioridad }}</span></p>
+    <p>🟡 <strong>Estado:</strong> <span class="badge bg-warning text-dark">{{ tarea.estado }}</span></p>
+    <p>📅 <strong>Fecha límite:</strong> {{ tarea.fecha_limite }}</p>
+    <p>👤 <strong>Creado el:</strong> {{ tarea.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    <p class="mt-3">📝 <strong>Descripción:</strong> {{ tarea.descripcion }}</p>
+</div>
+
+<div class="d-flex align-items-center mb-4">
+    <a href="/tareas/editar/{{ tarea.id }}" class="btn btn-primary me-2">Editar</a>
+    {% if tarea.estado != 'Completada' %}
+        <a href="/tareas/completar/{{ tarea.id }}" class="btn btn-success me-2">Marcar como Completada</a>
+    {% endif %}
+    <a href="/tareas/borrar/{{ tarea.id }}" class="btn btn-danger" onclick="return confirm('¿Borrar tarea?')">Borrar</a>
+</div>
+
+<div>
+    <a href="/tareas" class="text-primary text-decoration-underline fs-5">← Volver a Mis Tareas</a>
+</div>
+{% endblock %}
